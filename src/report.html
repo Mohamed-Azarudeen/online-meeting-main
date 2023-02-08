@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+
+<canvas id="myChart" style="width:100%;max-width:600px; text-align: center;"></canvas>
+
+<script>
+var xValues = ["Inactive", "Neutral", "Happy", "Sad", "Angry", "Disgusted", "Surprised", "Fearful"];
+            
+var inactivecount = parseInt(sessionStorage.getItem("inactivecount"));
+var neautralcount = parseInt(sessionStorage.getItem("neutralcount"));
+var happycount = parseInt(sessionStorage.getItem("happycount"));
+var sadcount = parseInt(sessionStorage.getItem("sadcount"));
+var disgustedcount = parseInt(sessionStorage.getItem("disgustedcount"));
+var fearfulcount = parseInt(sessionStorage.getItem("fearfulcount"));
+var angrycount = parseInt(sessionStorage.getItem("angrycount"));
+var suprisedcount = parseInt(sessionStorage.getItem("suprisedcount"));
+// console.log(inactivecount)
+var yValues = [inactivecount, neautralcount, happycount, sadcount, angrycount, disgustedcount, suprisedcount, fearfulcount];
+
+// var yValues = [10, 10, 10, 10, 10, 10, 10, 10];
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797",
+  "#e8c3b9",
+  "#1e7145",
+  "#00004d",
+  "#0000ff",
+  "#8a00e6"
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Your Emotions Detected In This Meeting"
+    }
+  }
+});
+</script>
+
+</body>
+</html>

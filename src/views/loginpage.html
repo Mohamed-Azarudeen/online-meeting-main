@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>Login Page</title>
+</head>
+<body>
+  <div class="container" style="width: 50%; padding-left: 300; padding-top: 100;">
+    <h4 class="mt-1 mb-5 pb-1">Login Page</h4>
+    <form action="/login" method="post" id="login">
+      <!-- Email input -->
+      <div class="form-outline mb-4">
+        <input type="email" id="email" class="form-control" required/>
+        <label class="form-label" for="form2Example1">Email address</label>
+      </div>
+    
+      <!-- Password input -->
+      <div class="form-outline mb-4">
+        <input type="password" id="password" class="form-control" required/>
+        <label class="form-label" for="form2Example2">Password</label>
+      </div>
+    
+      <!-- Submit button -->
+      <button type="submit" class="btn btn-primary btn-block mb-4">Login in</button>
+    
+      <!-- Register buttons -->
+      <div class="text-center">
+        <p>Not a member? <a href="/register">Register</a></p>
+      </div>
+    </form>
+  </div>
+  
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+  <script>
+      
+      const firebaseConfig = {
+      apiKey: "AIzaSyD8Znx45accgfmJuvi_pe9SKo7OoQ7JtE0",
+      authDomain: "online-meeting-73126.firebaseapp.com",
+      projectId: "online-meeting-73126",
+      storageBucket: "online-meeting-73126.appspot.com",
+      messagingSenderId: "674919510574",
+      appId: "1:674919510574:web:9c86c58ca200a726c565bf",
+      measurementId: "G-QE5MSJFKTL"   
+      };
+  
+      firebase.initializeApp(firebaseConfig);
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+  
+      document
+              .getElementById("login")
+              .addEventListener("submit", (event) => {
+                event.preventDefault();
+                const email = event.target.email.value;
+                const password = event.target.password.value;
+  
+                firebase
+                  .auth()
+                  .signInWithEmailAndPassword(email, password)
+                  .then(({ user }) => {
+                    return user.getIdToken().then((idToken) => {
+                      return fetch("/sessionLogin", {
+                        method: "POST",
+                        headers: {
+                          Accept: "application/json",
+                          "Content-Type": "application/json",
+                          "CSRF-Token": Cookies.get("XSRF-TOKEN"),
+                        },
+                        body: JSON.stringify({ idToken }),
+                      });
+                    });
+                  })
+                  .then(() => {
+                    return firebase.auth().signOut();
+                  })
+                  .then(() => {
+                    window.location.assign("/");
+                  });
+                return false;
+              });
+  </script>
+</body>
+</html>
